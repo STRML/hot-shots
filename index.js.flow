@@ -1,0 +1,63 @@
+// @flow
+// Based on https://raw.githubusercontent.com/flowtype/flow-typed/eb4933aae1ddc20bd930d05348a042fa5bef6427/definitions/npm/node-dogstatsd_v0.x.x/flow_v0.25.x-/node-dogstatsd_v0.x.x.js
+
+declare module 'hot-shots' {
+
+  // https://github.com/brightcove/hot-shots#usage
+  declare type ClientOptions = {
+    host: string,
+    port: number,
+
+    // Optionals
+    bufferFlushInterval?: number,
+    cacheDns?: boolean,
+    errorHandler?: (Error) => any,
+    globalTags?: string[],
+    maxBufferSize?: number,
+    mock?: boolean,
+    prefix?: string,
+    sampleRate?: number,
+    suffix?: string,
+    telegraf?: boolean,
+  };
+
+  declare type EventOptions = {
+    date_happened?: Date,
+    hostname?: string,
+    aggregation_key?: string,
+    priority?: 'low' | 'normal',
+    source_type_name?: string,
+    alert_type?: 'info' | 'warning' | 'error' | 'success'
+  };
+
+  declare type CheckOptions = {
+    date_happened?: Date,
+    hostname?: string,
+    message?: string,
+  };
+
+  declare export default class Client {
+    constructor(options: ClientOptions): void;
+
+    timing(stat: string, time: number, sample_rate?: number, tags?: string[]): void;
+    increment(stats: string | string[], sample_rate?: number, tags?: string[]): void;
+    incrementBy(stats: string | string[], value: number, tags?: string[]): void;
+    decrement(stats: string | string[], sample_rate?: number, tags?: string[]): void;
+    decrementBy(stats: string | string[], value: number, tags?: string[]): void;
+    gauge(stat: string, value: number, sample_rate?: number, tags?: string[]): void;
+    histogram(stat: string, value: number, sample_rate?: number, tags?: string[]): void;
+    set(stat: string, value: number, sample_rate?: number, tags?: string[]): void;
+    update_stats(stats: string | string[], delta: number, sample_rate?: number, tags?: string[]): void;
+
+    send_data(buf: Buffer): void;
+    send(data: string, sample_rate?: number, tags?: string[]): void;
+
+    event(title: string, text: string, options?: EventOptions, tags?: string[]): void;
+    check(name: string, status: string, options?: CheckOptions, tags?: string[]): void;
+
+    close(cb?: (Error) => void): void;
+
+    mock: boolean;
+    socket: net$Socket;
+  }
+}
